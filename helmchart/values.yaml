@@ -1,1 +1,8 @@
-123
+database:
+  dbname: db_mysql
+  dbtable: music
+pods:
+  image: avited/myapp
+  tag: v1
+  replica: 2
+
