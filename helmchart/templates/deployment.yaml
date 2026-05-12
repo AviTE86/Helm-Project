@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }} 
   labels:
+    app: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
@@ -15,10 +16,9 @@ spec:
     spec:
       containers:
         - name: myapp
-          image: "avited/myapp:v1"
+          image: "{{ .Values.pods.image }}:{{ .Values.pods.tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 5001
               protocol: TCP
-
