@@ -3,14 +3,14 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}
   labels:
+    app: {{ .Release.Name }}
 spec:
  ### ADD IF ENV=LOCAL > TYPE:NODEPORT ELSE > 
   type: LoadBalancer
   ports:
     - name: http
       protocol: TCP
-      port: 5001
-      targetPort: 5001
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.container.port }}
   selector:
     app: {{ .Release.Name }}
-
