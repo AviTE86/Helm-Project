@@ -11,6 +11,7 @@ podTemplate(
         containerTemplate(
             name: 'jnlp',
             image: 'jenkins/inbound-agent',
+            privileged: true,
             ttyEnabled: true
         ),
 
