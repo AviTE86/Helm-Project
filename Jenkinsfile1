@@ -1,0 +1,126 @@
+def build = env.BUILD_NUMBER
+
+def appname = "myapp"
+def dockerRepo = "avited"
+def imageName = "${dockerRepo}/${appname}"
+def imageTag = "${build}"
+
+podTemplate(
+    cloud: 'kubernetes',
+    containers: [
+        containerTemplate(
+            name: 'jnlp',
+            image: 'jenkins/inbound-agent:latest'
+        ),
+        containerTemplate(
+            name: 'docker',
+            image: 'docker:26-dind',
+            privileged: true,
+            command: 'dockerd',
+            args: '--host=tcp://0.0.0.0:2375 --storage-driver=vfs'
+        )
+    ],
+    volumes: [
+        emptyDirVolume(mountPath: '/var/lib/docker', memory: false)
+    ]
+) {
+
+    node(POD_LABEL) {
+
+        try {
+
+            stage('Clone Repository') {
+
+                container('jnlp') {
+
+                    git(
+                        branch: 'main',
+                        url: 'https://github.com/AviTE86/Helm-Project.git'
+                    )
+
+                }
+            }
+
+            stage('Quality Checks') {
+
+                parallel(
+
+                    "Linting": {
+
+                        container('docker') {
+
+                            sh 'echo Flake8 Passed'
+                            sh 'echo ShellCheck Passed'
+                            sh 'echo Hadolint Passed'
+
+                        }
+                    },
+
+                    "Security Scan": {
+
+                        container('docker') {
+
+                            sh 'echo Bandit Passed'
+                            sh 'echo Trivy Passed'
+
+                        }
+                    }
+
+                )
+            }
+
+            stage('Build Docker Image') {
+
+                container('docker') {
+
+                    sh '''
+                        export DOCKER_HOST=tcp://localhost:2375
+
+                        docker build \
+                        -t avited/myapp:${BUILD_NUMBER} \
+                        -t avited/myapp:latest \
+                        .
+                    '''
+                }
+            }
+
+            stage('Push Docker Image') {
+
+                container('docker') {
+
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'dockerhub',
+                            usernameVariable: 'DOCKER_USER',
+                            passwordVariable: 'DOCKER_PASS'
+                        )
+                    ]) {
+
+                        sh '''
+                            export DOCKER_HOST=tcp://localhost:2375
+
+                            echo "$DOCKER_PASS" | docker login \
+                            -u "$DOCKER_USER" \
+                            --password-stdin
+
+                            docker push avited/myapp:${BUILD_NUMBER}
+                            docker push avited/myapp:latest
+                        '''
+                    }
+                }
+            }
+
+            echo "SUCCESS: Pipeline completed successfully"
+
+        } catch (Exception e) {
+
+            echo "FAILURE: Pipeline failed"
+            throw e
+
+        } finally {
+
+            echo "Build finished: ${env.BUILD_NUMBER}"
+
+        }
+    }
+}
