@@ -1,8 +1,7 @@
 def build = env.BUILD_NUMBER
-
-def appname = "flask-aws-monitor"
+def branch = env.BRANCH_NAME
+def appname = "myapp"
 def repo = "avited"
-
 def appimage = "${repo}/${appname}"
 def apptag = "${build}"
 
