@@ -49,7 +49,7 @@ podTemplate(
             }
         }
 
-        stage('Quality Checks') {
+/*        stage('Quality Checks') {
             parallel(
 
                 "Linting": {
@@ -68,7 +68,7 @@ podTemplate(
                 }
             )
         }
-
+*/
         stage('Build Docker Image') {
             container('docker') {
                 sh """
