@@ -111,7 +111,7 @@ podTemplate(
 
                     withCredentials([
                         usernamePassword(
-                            credentialsId: 'dockerhub',      // ENTER_HERE if different
+                            credentialsId: 'dockerhub',
                             usernameVariable: 'DOCKER_USER',
                             passwordVariable: 'DOCKER_PASS'
                         )
@@ -141,7 +141,7 @@ podTemplate(
 
                 withCredentials([
                     usernamePassword(
-                        credentialsId: 'github-argocd',   // ENTER_HERE if different
+                        credentialsId: 'github',
                         usernameVariable: 'GIT_USER',
                         passwordVariable: 'GIT_TOKEN'
                     )
