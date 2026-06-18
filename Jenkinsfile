@@ -152,12 +152,12 @@ podTemplate(
                         passwordVariable: 'GH_TOKEN'
                     )
                 ]) {
-                    sh """
+                    sh '''
                         git config user.email "jenkins@ci.local"
                         git config user.name "Jenkins CI"
                         git tag -a "v${build}" -m "Release build ${build}"
                         git push "https://${GH_USER}:${GH_TOKEN}@github.com/AviTE86/Helm-Project.git" "v${build}"
-                    """
+                    '''
                 }
             }
         }
