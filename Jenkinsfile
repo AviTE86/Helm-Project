@@ -137,17 +137,9 @@ podTemplate(
                         passwordVariable: 'GH_TOKEN'
                     )
                 ]) {
-                    // FIX 1: withEnv safely passes the Groovy `build` variable
-                    // to the shell as a plain env var, without mixing it into
-                    // the same """...""" block as the credentials
+
                     withEnv(["BUILD_TAG=v${build}"]) {
 
-                        // FIX 2: single-quoted sh '''...''' means Groovy does NOT
-                        // interpolate anything — $GH_USER, $GH_TOKEN, $BUILD_TAG
-                        // are all expanded by the shell at runtime, not by Groovy.
-                        // Previously, """...""" caused Groovy to embed $GH_USER
-                        // (your email: satmyhat@gmail.com) literally into the URL,
-                        // so Git parsed "gmail.com:****" as host:port → fatal error.
                         sh '''
                             git config user.email "jenkins@ci.local"
                             git config user.name "Jenkins CI"
