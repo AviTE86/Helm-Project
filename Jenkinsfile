@@ -8,7 +8,7 @@ def apptag = "${build}"
 // Posts a message to Slack via an Incoming Webhook.
 // The webhook URL is stored as a Jenkins "Secret text" credential (id: 'slack-webhook')
 // and is never hardcoded here.
-def notifySlack(String message) {
+/*def notifySlack(String message) {
     withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK')]) {
         container('jnlp') {
             sh """
@@ -19,7 +19,7 @@ def notifySlack(String message) {
         }
     }
 }
-
+*/
 podTemplate(
     containers: [
         containerTemplate(
