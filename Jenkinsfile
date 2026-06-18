@@ -93,7 +93,7 @@ podTemplate(
                 try {
                     sh """
                         echo 'Waiting for the Docker daemon to become ready...'
-                        timeout 90 sh -c 'until docker info >/dev/null 2>&1; do sleep 2; done'
+                        timeout 150 sh -c 'until docker info >/dev/null 2>&1; do sleep 2; done'
                         docker version
                         docker build \
                             -t ${appimage}:${apptag} \
@@ -156,7 +156,7 @@ podTemplate(
                         git config user.email "jenkins@ci.local"
                         git config user.name "Jenkins CI"
                         git tag -a "v${build}" -m "Release build ${build}"
-                        git push "https://\${GH_USER}:\${GH_TOKEN}@github.com/AviTE86/Helm-Project.git" "v${build}"
+                        git push "https://${GH_USER}:${GH_TOKEN}@github.com/AviTE86/Helm-Project.git" "v${build}"
                     """
                 }
             }
