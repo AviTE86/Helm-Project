@@ -10,7 +10,6 @@ podTemplate(
         containerTemplate(
             name: 'jnlp',
             image: 'jenkins/inbound-agent',
-            privileged: true,
             ttyEnabled: true
         ),
 
@@ -31,7 +30,7 @@ podTemplate(
             image: 'docker:26-dind',
             command: 'dockerd',
             args: '--host=tcp://0.0.0.0:2375 --host=unix:///var/run/docker.sock',
-            securityContext: 'privileged',
+            privileged: true,
             ttyEnabled: true,
             envVars: [
                 envVar(key: 'DOCKER_TLS_CERTDIR', value: '')
